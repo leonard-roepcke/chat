@@ -1,3 +1,5 @@
+"use client";
+
 import { supabase } from "@/lib/supabaseCllient";
 import Link from "next/link";
 import { useRef, useState } from "react";

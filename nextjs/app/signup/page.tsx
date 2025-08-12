@@ -1,9 +1,8 @@
+"use client";
 import { supabase } from "@/lib/supabaseCllient";
 import Link from "next/link";
-import { useRouter } from "next/router";
 import { useRef, useState } from "react";
 export default function SignUpPage() {
-  const router = useRouter();
   const emailRef = useRef<HTMLInputElement>(null);
   const passwordRef = useRef<HTMLInputElement>(null);
   const [error, setError] = useState<string | null>(null);
@@ -32,13 +31,14 @@ export default function SignUpPage() {
         </div>
 
         {/* Form */}
-        <form className="space-y-5">
+        <form className="space-y-5" onSubmit={handleSignUp}>
           {/* Email */}
           <div>
             <label htmlFor="email" className="block text-[#e0e0e0] mb-2 text-sm font-medium">
               Email Address
             </label>
             <input
+              ref={emailRef}
               type="email"
               id="email"
               placeholder="Enter your email"
@@ -53,6 +53,7 @@ export default function SignUpPage() {
               Password (Optional)
             </label>
             <input
+              ref={passwordRef}
               type="password"
               id="password"
               placeholder="Create a password or leave blank"
