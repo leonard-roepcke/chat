@@ -3,8 +3,10 @@
 import { supabase } from "@/lib/supabaseCllient";
 import Link from "next/link";
 import { useRef, useState } from "react";
+import { useRouter } from "next/navigation";
 
 export default function LoginPage() {
+  const router = useRouter();
   const emailRef = useRef<HTMLInputElement>(null);
   const passwordRef = useRef<HTMLInputElement>(null);
   const [error, setError] = useState<string | null>(null);
@@ -18,7 +20,7 @@ export default function LoginPage() {
     if (error) setError(error.message);
     else {
       setError(null);
-      console.log("loged in"); // evtl. Redirect oder UI Update
+      router.push("/dashboard"); 
     }
   };
   
