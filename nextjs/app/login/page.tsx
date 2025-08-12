@@ -1,6 +1,35 @@
+"use client";
+
+import React, { useRef, useState } from "react";
+import { supabase } from "../../lib/supabaseClient"; 
 import Link from "next/link";
+import { useRouter } from "next/navigation";
 
 export default function LoginPage() {
+  const router = useRouter();
+  const emailRef = useRef<HTMLInputElement>(null);
+  const passwordRef = useRef<HTMLInputElement>(null);
+  const [error, setError] = useState<string | null>(null);
+
+  const handleLogin = async (e: React.FormEvent) => {
+    e.preventDefault();
+    const email = emailRef.current?.value ?? "";
+    const password = passwordRef.current?.value ?? "";
+
+    console.log("Logging in with", email, password);
+
+    const { error } = await supabase.auth.signInWithPassword({ email, password });
+
+    if (error) {
+      console.error("Login error:", error.message);
+      setError(error.message);
+    } else {
+      setError(null);
+      console.log("Login successful, redirecting...");
+      router.push("/dashboard");
+    }
+  };
+
   return (
     <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-[#1a1a2e] via-[#16213e] to-[#0f0f23] p-5">
       <div className="bg-[rgba(30,30,50,0.9)] border-2 border-[#4a4a6a] rounded-2xl p-10 w-full max-w-md shadow-lg backdrop-blur-md">
@@ -11,13 +40,14 @@ export default function LoginPage() {
         </div>
 
         {/* Form */}
-        <form className="space-y-6">
+        <form className="space-y-6" onSubmit={handleLogin}>
           {/* Email */}
           <div>
             <label htmlFor="email" className="block text-[#e0e0e0] mb-2 text-sm font-medium">
               Email Address
             </label>
             <input
+              ref={emailRef}
               type="email"
               id="email"
               placeholder="Enter your email"
@@ -32,6 +62,7 @@ export default function LoginPage() {
               Password
             </label>
             <input
+              ref={passwordRef}
               type="password"
               id="password"
               placeholder="Enter your password"
@@ -46,10 +77,7 @@ export default function LoginPage() {
               <input type="checkbox" className="accent-[#7a6aa0]" />
               Remember me
             </label>
-            <a
-              href="#"
-              className="text-[#7a6aa0] text-sm hover:text-[#9a8ac0] hover:underline transition"
-            >
+            <a href="#" className="text-[#7a6aa0] text-sm hover:text-[#9a8ac0] hover:underline transition">
               Forgot Password?
             </a>
           </div>
@@ -63,15 +91,15 @@ export default function LoginPage() {
           </button>
         </form>
 
+        {/* Error message */}
+        {error && <p className="mt-4 text-red-500 text-sm">{error}</p>}
+
         {/* Signup */}
         <div className="text-center text-[#b0b0c0] text-sm mt-5">
           Don't have an account?{" "}
-          <Link
-                href="/signup"
-                className="text-[#7a6aa0] font-medium hover:text-[#9a8ac0] hover:underline transition"
-            >
-                Signup in here
-            </Link>
+          <Link href="/signup" className="text-[#7a6aa0] font-medium hover:text-[#9a8ac0] hover:underline transition">
+            Signup in here
+          </Link>
         </div>
       </div>
     </div>

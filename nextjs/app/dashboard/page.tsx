@@ -1,5 +1,7 @@
 "use client";
-import { useState } from "react";
+import { supabase } from "@/lib/supabaseClient";
+import { useRouter } from "next/navigation";
+import { useEffect, useState } from "react";
 
 type Chat = {
   id: number;
@@ -22,8 +24,31 @@ export default function Dashboard() {
     { id: 5, name: "Lisa Rodriguez", preview: "Great work on the presentation!", time: "Yesterday", initials: "LR" },
     { id: 6, name: "Team Bot", preview: "Daily standup reminder", time: "Yesterday", initials: "TB" },
   ];
+  const router = useRouter();
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    supabase.auth.getSession().then(({ data }) => {
+      if (!data.session) {
+        router.push("/");
+      } else {
+        setLoading(false);
+      }
+    });
+
+    const { data: authListener } = supabase.auth.onAuthStateChange((event, session) => {
+      if (!session) {
+        router.push("/");
+      }
+    });
+
+    return () => authListener?.subscription.unsubscribe();
+  }, [router]);
+
+  if (loading) return null;
 
   return (
+    
     <>
       <style>{`
         /* Scrollbars */
