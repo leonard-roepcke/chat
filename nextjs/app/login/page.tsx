@@ -1,6 +1,22 @@
+import { supabase } from "@/lib/supabaseCllient";
 import Link from "next/link";
+import { useRef, useState } from "react";
 
 export default function LoginPage() {
+  const emailRef = useRef<HTMLInputElement>(null);
+  const passwordRef = useRef<HTMLInputElement>(null);
+  const [error, setError] = useState<string | null>(null);
+
+  const handleLogin = async (e: React.FormEvent) => {
+    e.preventDefault();
+    const email = emailRef.current?.value ?? '';
+    const password = passwordRef.current?.value ?? '';
+
+    const { error } = await supabase.auth.signInWithPassword({ email, password });
+    if (error) setError(error.message);
+    else console.log("loged in"); // evtl. Redirect oder UI Update
+  };
+  
   return (
     <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-[#1a1a2e] via-[#16213e] to-[#0f0f23] p-5">
       <div className="bg-[rgba(30,30,50,0.9)] border-2 border-[#4a4a6a] rounded-2xl p-10 w-full max-w-md shadow-lg backdrop-blur-md">
@@ -11,13 +27,14 @@ export default function LoginPage() {
         </div>
 
         {/* Form */}
-        <form className="space-y-6">
+        <form className="space-y-6" onSubmit={handleLogin}>
           {/* Email */}
           <div>
             <label htmlFor="email" className="block text-[#e0e0e0] mb-2 text-sm font-medium">
               Email Address
             </label>
             <input
+            ref={emailRef}
               type="email"
               id="email"
               placeholder="Enter your email"
@@ -32,6 +49,7 @@ export default function LoginPage() {
               Password
             </label>
             <input
+              ref={passwordRef}
               type="password"
               id="password"
               placeholder="Enter your password"
