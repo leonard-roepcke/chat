@@ -2,7 +2,10 @@
 import { supabase } from "@/lib/supabaseCllient";
 import Link from "next/link";
 import { useRef, useState } from "react";
+import { useRouter } from "next/navigation";
+
 export default function SignUpPage() {
+  const router = useRouter();
   const emailRef = useRef<HTMLInputElement>(null);
   const passwordRef = useRef<HTMLInputElement>(null);
   const [error, setError] = useState<string | null>(null);
@@ -17,7 +20,7 @@ export default function SignUpPage() {
       setError(error.message);
     } else {
       setError(null);
-      console.log("Account created successfully");
+      router.push("/login"); 
     }
   };
   return (
