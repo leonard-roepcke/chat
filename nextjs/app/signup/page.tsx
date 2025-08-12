@@ -1,5 +1,26 @@
+import { supabase } from "@/lib/supabaseCllient";
 import Link from "next/link";
+import { useRouter } from "next/router";
+import { useRef, useState } from "react";
 export default function SignUpPage() {
+  const router = useRouter();
+  const emailRef = useRef<HTMLInputElement>(null);
+  const passwordRef = useRef<HTMLInputElement>(null);
+  const [error, setError] = useState<string | null>(null);
+
+  const handleSignUp = async (e: React.FormEvent) => {
+    e.preventDefault();
+    const email = emailRef.current?.value ?? "";
+    const password = passwordRef.current?.value ?? "";
+
+    const { error } = await supabase.auth.signUp({ email, password: password || undefined });
+    if (error) {
+      setError(error.message);
+    } else {
+      setError(null);
+      console.log("Account created successfully");
+    }
+  };
   return (
     <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-[#1a1a2e] via-[#16213e] to-[#0f0f23] p-5">
       <div className="bg-[rgba(30,30,50,0.9)] border-2 border-[#4a4a6a] rounded-2xl p-10 w-full max-w-lg shadow-lg backdrop-blur-md">

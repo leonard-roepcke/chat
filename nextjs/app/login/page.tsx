@@ -14,7 +14,10 @@ export default function LoginPage() {
 
     const { error } = await supabase.auth.signInWithPassword({ email, password });
     if (error) setError(error.message);
-    else console.log("loged in"); // evtl. Redirect oder UI Update
+    else {
+      setError(null);
+      console.log("loged in"); // evtl. Redirect oder UI Update
+    }
   };
   
   return (
